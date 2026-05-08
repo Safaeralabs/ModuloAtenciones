@@ -11,15 +11,6 @@ const menu = [
   { key: 'turnero', label: 'Turnero' },
 ]
 
-const serviceIcons = {
-  Subsidio: 'Sb',
-  Credito: 'Cr',
-  'Asesor Integral': 'AI',
-  Mercadeo: 'Mk',
-  Afiliaciones: 'Af',
-  PQRS: 'PQ',
-}
-
 function App() {
   const [screen, setScreen] = useState('login')
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -94,6 +85,13 @@ function App() {
 
   return (
     <div className="app-shell">
+      {isMobileMenuOpen && (
+        <div
+          className="mobile-overlay"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
       <Sidebar current={screen} onNavigate={goTo} isMobileMenuOpen={isMobileMenuOpen} />
       <main className="content-area">
         <Topbar onToggleMenu={() => setIsMobileMenuOpen((value) => !value)} onLogout={handleLogout} />
@@ -113,24 +111,125 @@ function App() {
   )
 }
 
+function NavIcon({ name }) {
+  return (
+    <svg className="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {name === 'dashboard' && <>
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </>}
+      {name === 'register' && <>
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+        <line x1="12" y1="18" x2="12" y2="12" />
+        <line x1="9" y1="15" x2="15" y2="15" />
+      </>}
+      {name === 'history' && <>
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </>}
+      {name === 'reports' && <>
+        <line x1="18" y1="20" x2="18" y2="10" />
+        <line x1="12" y1="20" x2="12" y2="4" />
+        <line x1="6" y1="20" x2="6" y2="14" />
+        <line x1="2" y1="20" x2="22" y2="20" />
+      </>}
+      {name === 'turnero' && <>
+        <path d="M2 9a3 3 0 010 6v2a2 2 0 002 2h16a2 2 0 002-2v-2a3 3 0 010-6V7a2 2 0 00-2-2H4a2 2 0 00-2 2v2z" />
+        <line x1="9" y1="3" x2="9" y2="21" />
+      </>}
+    </svg>
+  )
+}
+
+function EyeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  )
+}
+
+function EyeOffIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
+      <line x1="1" y1="1" x2="23" y2="23" />
+    </svg>
+  )
+}
+
+function ServiceSvgIcon({ service }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="service-svg" aria-hidden="true">
+      {service === 'Subsidio' && <>
+        <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </>}
+      {service === 'Credito' && <>
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+        <line x1="1" y1="10" x2="23" y2="10" />
+      </>}
+      {service === 'Asesor Integral' && <>
+        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </>}
+      {service === 'Mercadeo' && <>
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+      </>}
+      {service === 'Afiliaciones' && <>
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 00-3-3.87" />
+        <path d="M16 3.13a4 4 0 010 7.75" />
+      </>}
+      {service === 'PQRS' && <>
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+      </>}
+    </svg>
+  )
+}
+
 function LoginScreen({ onLogin }) {
+  const [showPassword, setShowPassword] = useState(false)
+
   return (
     <div className="login-page">
       <div className="brand-header">
         <Logo />
       </div>
       <section className="login-card">
-        <div className="login-avatar">US</div>
+        <div className="login-avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ width: '1.7rem', height: '1.7rem', color: 'var(--blue)' }} aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
         <h1>Bienvenido de nuevo</h1>
         <p>Inicia sesion para continuar</p>
         <div className="field-grid single">
           <label>
             Usuario
-            <input placeholder="Ingresa tu usuario" />
+            <input placeholder="Ingresa tu usuario" autoComplete="username" />
           </label>
           <label>
             Contrasena
-            <input placeholder="Ingresa tu contrasena" type="password" />
+            <div className="password-field">
+              <input
+                placeholder="Ingresa tu contrasena"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+              />
+              <button
+                className="password-toggle"
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+              >
+                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+              </button>
+            </div>
           </label>
         </div>
         <div className="login-row">
@@ -156,15 +255,18 @@ function Sidebar({ current, onNavigate, isMobileMenuOpen }) {
   return (
     <aside className={`sidebar ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
       <Logo compact />
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" aria-label="Navegacion principal">
         {menu.map((item) => (
           <button
             key={item.key}
             className={`nav-item ${current === item.key ? 'active' : ''}`}
             type="button"
+            aria-current={current === item.key ? 'page' : undefined}
             onClick={() => onNavigate(item.key)}
           >
-            <span className="nav-icon">{item.label.slice(0, 1)}</span>
+            <span className="nav-icon">
+              <NavIcon name={item.key} />
+            </span>
             {item.label}
           </button>
         ))}
@@ -181,11 +283,15 @@ function Topbar({ onToggleMenu, onLogout }) {
   return (
     <header className="topbar">
       <button className="ghost-button" type="button" aria-label="Abrir menu principal" onClick={onToggleMenu}>
-        Menu
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ width: '1.25rem', height: '1.25rem' }} aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6" />
+          <line x1="3" y1="12" x2="21" y2="12" />
+          <line x1="3" y1="18" x2="21" y2="18" />
+        </svg>
       </button>
       <div className="topbar-user">
-        <span className="notification-dot">3</span>
-        <div className="avatar">MF</div>
+        <span className="notification-dot" aria-label="3 notificaciones">3</span>
+        <div className="avatar" aria-hidden="true">MF</div>
         <div>
           <strong>Maria Fernanda</strong>
           <span>Asesor Integral</span>
@@ -207,7 +313,7 @@ function Dashboard({ onNewAttention, onOpenHistory, onOpenDetail }) {
           <p>Aqui tienes un resumen de tus atenciones y actividades.</p>
         </div>
         <button className="primary-button" type="button" onClick={onNewAttention}>
-          Nueva atencion
+          + Nueva atencion
         </button>
       </div>
       <div className="metric-grid">
@@ -223,7 +329,7 @@ function Dashboard({ onNewAttention, onOpenHistory, onOpenDetail }) {
         <div className="panel-header">
           <h3>Atenciones recientes</h3>
           <button className="link-button" type="button" onClick={onOpenHistory}>
-            Ver todas
+            Ver todas &rarr;
           </button>
         </div>
         <AttentionTable rows={attentions} onSelect={onOpenDetail} />
@@ -236,7 +342,7 @@ function RegisterAttention({ onCancel }) {
   return (
     <section className="page">
       <div className="page-title">
-        <span className="breadcrumb">Inicio &gt; Registrar atencion</span>
+        <span className="breadcrumb">Inicio / Registrar atencion</span>
         <h2>Registrar nueva atencion</h2>
         <p>Completa la informacion de la atencion brindada al usuario.</p>
       </div>
@@ -244,23 +350,23 @@ function RegisterAttention({ onCancel }) {
         <FormCard title="Datos del cliente">
           <div className="field-grid">
             <label>
-              Cedula
-              <input placeholder="Ingresa la cedula" />
+              Cedula <span className="required-mark" aria-hidden="true">*</span>
+              <input placeholder="Ingresa la cedula" inputMode="numeric" autoComplete="off" />
             </label>
             <label>
-              Nombre completo
-              <input placeholder="Ingresa el nombre completo" />
+              Nombre completo <span className="required-mark" aria-hidden="true">*</span>
+              <input placeholder="Ingresa el nombre completo" autoComplete="name" />
             </label>
             <label>
               Telefono
-              <input placeholder="Ingresa el telefono" />
+              <input placeholder="Ingresa el telefono" inputMode="tel" autoComplete="tel" />
             </label>
           </div>
         </FormCard>
         <FormCard title="Informacion de la atencion">
           <div className="field-grid">
             <label>
-              Servicio
+              Servicio <span className="required-mark" aria-hidden="true">*</span>
               <select defaultValue="">
                 <option value="" disabled>
                   Selecciona un servicio
@@ -271,7 +377,7 @@ function RegisterAttention({ onCancel }) {
               </select>
             </label>
             <label>
-              Motivo de atencion
+              Motivo de atencion <span className="required-mark" aria-hidden="true">*</span>
               <select defaultValue="">
                 <option value="" disabled>
                   Selecciona un motivo
@@ -283,7 +389,7 @@ function RegisterAttention({ onCancel }) {
               </select>
             </label>
             <label>
-              Estado
+              Estado <span className="required-mark" aria-hidden="true">*</span>
               <select defaultValue="">
                 <option value="" disabled>
                   Selecciona un estado
@@ -331,25 +437,25 @@ function History({ onSelect, onCreate }) {
           <p>Consulta y revisa las atenciones registradas.</p>
         </div>
         <button className="primary-button" type="button" onClick={onCreate}>
-          Nueva atencion
+          + Nueva atencion
         </button>
       </div>
       <div className="filter-row panel">
-        <input placeholder="Buscar por codigo, cedula, nombre..." />
-        <select defaultValue="todos-estados">
+        <input placeholder="Buscar por codigo, cedula, nombre..." aria-label="Buscar atenciones" />
+        <select defaultValue="todos-estados" aria-label="Filtrar por estado">
           <option value="todos-estados">Todos los estados</option>
           {statusOptions.map((option) => (
             <option key={option}>{option}</option>
           ))}
         </select>
-        <select defaultValue="todos-servicios">
+        <select defaultValue="todos-servicios" aria-label="Filtrar por servicio">
           <option value="todos-servicios">Todos los servicios</option>
           {serviceOptions.map((option) => (
             <option key={option}>{option}</option>
           ))}
         </select>
         <button className="secondary-button" type="button">
-          Limpiar filtros
+          Limpiar
         </button>
       </div>
       <section className="panel">
@@ -369,7 +475,7 @@ function Reports({ onSelect }) {
         </div>
         <div className="button-row">
           <button className="secondary-button" type="button">
-            Exportar a Excel
+            Exportar Excel
           </button>
           <button className="primary-button" type="button">
             Actualizar
@@ -377,12 +483,12 @@ function Reports({ onSelect }) {
         </div>
       </div>
       <div className="filter-row panel">
-        <input type="date" defaultValue="2024-05-01" />
-        <input type="date" defaultValue="2024-05-24" />
-        <select defaultValue="todos-asesores">
+        <input type="date" defaultValue="2024-05-01" aria-label="Fecha desde" />
+        <input type="date" defaultValue="2024-05-24" aria-label="Fecha hasta" />
+        <select defaultValue="todos-asesores" aria-label="Filtrar por asesor">
           <option value="todos-asesores">Todos los asesores</option>
         </select>
-        <select defaultValue="todos-servicios">
+        <select defaultValue="todos-servicios" aria-label="Filtrar por servicio">
           <option value="todos-servicios">Todos los servicios</option>
         </select>
       </div>
@@ -396,8 +502,28 @@ function Reports({ onSelect }) {
         ))}
       </div>
       <div className="chart-grid">
-        <ChartCard title="Atenciones por asesor" bars={[100, 78, 63, 55, 40, 22]} />
-        <ChartCard title="Atenciones por servicio" bars={[92, 68, 51, 33, 18, 9]} />
+        <ChartCard
+          title="Atenciones por asesor"
+          bars={[
+            { value: 100, label: 'MF' },
+            { value: 78, label: 'CA' },
+            { value: 63, label: 'JR' },
+            { value: 55, label: 'LP' },
+            { value: 40, label: 'RG' },
+            { value: 22, label: 'ST' },
+          ]}
+        />
+        <ChartCard
+          title="Atenciones por servicio"
+          bars={[
+            { value: 92, label: 'Sub' },
+            { value: 68, label: 'Cre' },
+            { value: 51, label: 'AI' },
+            { value: 33, label: 'Afi' },
+            { value: 18, label: 'Mkt' },
+            { value: 9, label: 'PQ' },
+          ]}
+        />
         <DonutCard />
         <LineCard />
       </div>
@@ -416,7 +542,7 @@ function AttentionDetail({ attention, onBack }) {
     <section className="page">
       <div className="page-title detail-header">
         <div>
-          <span className="breadcrumb">Historial &gt; Detalle de atencion</span>
+          <span className="breadcrumb">Historial / Detalle de atencion</span>
           <h2>{attention.id}</h2>
           <p>Fecha de registro: {attention.date}</p>
         </div>
@@ -477,7 +603,7 @@ function AttentionDetail({ attention, onBack }) {
       </div>
       <div className="page-actions split">
         <button className="secondary-button" type="button" onClick={onBack}>
-          Volver al historial
+          &larr; Volver al historial
         </button>
         <button className="danger-button" type="button">
           Anular atencion
@@ -504,8 +630,10 @@ function PublicTurnero({ onBack }) {
         <div className="turnero-layout">
           <div className="service-rail">
             {serviceOptions.map((service) => (
-              <div key={service} className="service-chip">
-                <span>{serviceIcons[service]}</span>
+              <div key={service} className="service-chip" role="listitem">
+                <span className="service-chip-icon">
+                  <ServiceSvgIcon service={service} />
+                </span>
                 <strong>{service}</strong>
               </div>
             ))}
@@ -514,27 +642,27 @@ function PublicTurnero({ onBack }) {
             <FormCard title="Datos del cliente">
               <div className="field-grid">
                 <label>
-                  Cedula
-                  <input placeholder="Ingresa tu numero de cedula" />
+                  Cedula <span className="required-mark" aria-hidden="true">*</span>
+                  <input placeholder="Ingresa tu numero de cedula" inputMode="numeric" />
                 </label>
                 <label>
-                  Nombre completo
-                  <input placeholder="Ingresa tu nombre completo" />
+                  Nombre completo <span className="required-mark" aria-hidden="true">*</span>
+                  <input placeholder="Ingresa tu nombre completo" autoComplete="name" />
                 </label>
                 <label>
                   Telefono
-                  <input placeholder="Ingresa tu numero de telefono" />
+                  <input placeholder="Ingresa tu numero de telefono" inputMode="tel" autoComplete="tel" />
                 </label>
                 <label>
                   Correo electronico
-                  <input placeholder="ejemplo@correo.com" />
+                  <input placeholder="ejemplo@correo.com" type="email" autoComplete="email" />
                 </label>
               </div>
             </FormCard>
             <FormCard title="Informacion de la atencion">
               <div className="field-grid two-cols">
                 <label>
-                  Servicio
+                  Servicio <span className="required-mark" aria-hidden="true">*</span>
                   <select defaultValue="">
                     <option value="" disabled>
                       Selecciona el servicio
@@ -584,14 +712,28 @@ function PublicTurnero({ onBack }) {
           </div>
           <aside className="turnero-side">
             <div className="queue-card">
-              <span className="queue-icon">TE</span>
+              <span className="queue-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '1.6rem', height: '1.6rem', color: 'var(--blue)' }} aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </span>
               <h3>Tiempo estimado de espera</h3>
               <strong>15</strong>
               <span>minutos</span>
               <p>El tiempo de espera puede variar segun la demanda.</p>
             </div>
             <div className="queue-card">
-              <span className="queue-icon">EF</span>
+              <span className="queue-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{ width: '1.6rem', height: '1.6rem', color: 'var(--blue)' }} aria-hidden="true">
+                  <line x1="8" y1="6" x2="21" y2="6" />
+                  <line x1="8" y1="12" x2="21" y2="12" />
+                  <line x1="8" y1="18" x2="21" y2="18" />
+                  <line x1="3" y1="6" x2="3.01" y2="6" />
+                  <line x1="3" y1="12" x2="3.01" y2="12" />
+                  <line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+              </span>
               <h3>Estado de la fila</h3>
               <p>Personas en espera</p>
               <strong>23</strong>
@@ -611,20 +753,20 @@ function AttentionTable({ rows, onSelect }) {
       <table>
         <thead>
           <tr>
-            <th>Codigo</th>
-            <th>Fecha y hora</th>
-            <th>Cliente</th>
-            <th>Servicio</th>
-            <th>Motivo</th>
-            <th>Estado</th>
-            <th>Asesor</th>
-            <th></th>
+            <th scope="col">Codigo</th>
+            <th scope="col">Fecha y hora</th>
+            <th scope="col">Cliente</th>
+            <th scope="col">Servicio</th>
+            <th scope="col">Motivo</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Asesor</th>
+            <th scope="col"><span className="sr-only">Acciones</span></th>
           </tr>
         </thead>
         <tbody>
           {rows.map((row) => (
             <tr key={row.id}>
-              <td>{row.id}</td>
+              <td className="code-cell">{row.id}</td>
               <td>{row.date}</td>
               <td>{row.client}</td>
               <td>
@@ -637,7 +779,7 @@ function AttentionTable({ rows, onSelect }) {
               <td>{row.advisor}</td>
               <td>
                 <button className="icon-button action-link" type="button" onClick={() => onSelect?.(row)} disabled={!onSelect}>
-                  Ver
+                  Ver &rarr;
                 </button>
               </td>
             </tr>
@@ -677,19 +819,24 @@ function TextCard({ title, text }) {
   return (
     <section className="panel detail-card">
       <h3>{title}</h3>
-      <p>{text}</p>
+      <p className="text-card-body">{text}</p>
     </section>
   )
 }
 
 function ChartCard({ title, bars }) {
+  const max = Math.max(...bars.map((b) => b.value))
   return (
     <section className="panel chart-card">
       <h3>{title}</h3>
       <div className="bars">
         {bars.map((bar, index) => (
-          <div key={bar + index} className="bar-group">
-            <span style={{ height: `${bar}%` }} />
+          <div key={index} className="bar-group">
+            <span className="bar-value">{bar.value}</span>
+            <div className="bar-track">
+              <span className="bar-fill" style={{ height: `${(bar.value / max) * 100}%` }} />
+            </div>
+            <span className="bar-axis-label">{bar.label}</span>
           </div>
         ))}
       </div>
@@ -701,29 +848,49 @@ function DonutCard() {
   return (
     <section className="panel chart-card">
       <h3>Estado de atenciones</h3>
-      <div className="donut" />
+      <div className="donut-wrap">
+        <div className="donut" role="img" aria-label="Distribucion: 71.5% cerradas, 20.5% pendientes, 8% escaladas" />
+        <div className="donut-center">
+          <strong>358</strong>
+          <span>total</span>
+        </div>
+      </div>
       <div className="legend">
-        <span><i className="blue" /> Cerradas</span>
-        <span><i className="amber" /> Pendientes</span>
-        <span><i className="red" /> Escaladas</span>
+        <span><i className="blue" aria-hidden="true" /> Cerradas <strong>256</strong></span>
+        <span><i className="amber" aria-hidden="true" /> Pendientes <strong>73</strong></span>
+        <span><i className="red" aria-hidden="true" /> Escaladas <strong>29</strong></span>
       </div>
     </section>
   )
 }
 
 function LineCard() {
+  const points = [
+    { x: 24, y: 85, label: 'L', value: 12 },
+    { x: 65, y: 60, label: 'M', value: 18 },
+    { x: 106, y: 44, label: 'X', value: 22 },
+    { x: 147, y: 22, label: 'J', value: 28 },
+    { x: 188, y: 55, label: 'V', value: 19 },
+    { x: 224, y: 70, label: 'S', value: 15 },
+  ]
+  const polylineStr = points.map((p) => `${p.x},${p.y}`).join(' ')
+  const areaStr = `${points[0].x},104 ${polylineStr} ${points[points.length - 1].x},104`
+
   return (
     <section className="panel chart-card">
       <h3>Atenciones por dia</h3>
-      <svg viewBox="0 0 240 120" className="line-chart" aria-hidden="true">
-        <polyline
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="4"
-          points="10,90 60,65 110,48 160,25 210,58"
-        />
-        {[['10', '90'], ['60', '65'], ['110', '48'], ['160', '25'], ['210', '58']].map(([x, y]) => (
-          <circle key={`${x}-${y}`} cx={x} cy={y} r="5" fill="currentColor" />
+      <svg viewBox="0 0 248 120" className="line-chart" role="img" aria-label="Grafico de atenciones por dia de la semana">
+        {[25, 50, 75].map((y) => (
+          <line key={y} x1="10" y1={y} x2="238" y2={y} stroke="#e8eefc" strokeWidth="1" />
+        ))}
+        <polygon points={areaStr} fill="rgba(22,100,234,0.07)" />
+        <polyline fill="none" stroke="#1664ea" strokeWidth="2.5" strokeLinejoin="round" points={polylineStr} />
+        {points.map((p) => (
+          <g key={p.x}>
+            <circle cx={p.x} cy={p.y} r="4.5" fill="#fff" stroke="#1664ea" strokeWidth="2.5" />
+            <text x={p.x} y="116" textAnchor="middle" fontSize="9" fill="#6d789a" fontFamily="inherit">{p.label}</text>
+            <title>{p.label}: {p.value} atenciones</title>
+          </g>
         ))}
       </svg>
     </section>
