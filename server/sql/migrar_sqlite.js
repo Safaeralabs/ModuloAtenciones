@@ -28,7 +28,7 @@ const {
   DB_NAME = 'mercadeo',
 } = process.env
 
-// Rol legado -> rol nuevo de la Plataforma de Mercadeo (seccion 5 del plan).
+// Rol legado -> rol nuevo del Módulo de Mercadeo (seccion 5 del plan).
 function migrarRol(rolViejo) {
   if (rolViejo === 'admin') return 'admin'
   return 'asesor_integral'

@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────────
--- Plataforma de Gestion de Mercadeo Comfaguajira - Esquema MySQL
+-- Módulo de Mercadeo Comfaguajira - Esquema MySQL
 -- Fuente unica de verdad: BD de Mercadeo (ver docs/PLAN-IMPLEMENTACION-PLATAFORMA-MERCADEO.md)
 -- Convencion: nunca se elimina informacion, solo se marca anulada/inactiva.
 -- ─────────────────────────────────────────────────────────────────
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS atenciones (
   accion_seguimiento  VARCHAR(120),
   fecha_seguimiento   VARCHAR(20),
   nota_mercadeo       TEXT,
-  -- Extension Plataforma de Mercadeo (Fase 1, seccion 4.3 del plan):
+  -- Extension Módulo de Mercadeo (Fase 1, seccion 4.3 del plan):
   resultado                 VARCHAR(40)  NULL,
   interes_servicio          JSON         NULL,
   genera_cotizacion         TINYINT(1)   NOT NULL DEFAULT 0,

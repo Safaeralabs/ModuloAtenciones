@@ -69,7 +69,7 @@ export const TIPO_CATALOGO_LABELS = {
   sede: 'Sedes',
 }
 
-// Roles de la Plataforma de Mercadeo (seccion 5 del plan de implementacion).
+// Roles del Módulo de Mercadeo (seccion 5 del plan de implementacion).
 export const ROLE_LABELS = {
   asesor_integral: 'Asesor Integral (Atención al Cliente)',
   asesor_comercial: 'Asesor Comercial (Ventas)',
@@ -100,7 +100,7 @@ export const EMPTY_FORM = {
   caso: '',
   management: '',
   observations: '',
-  // Resultado de la atencion (Plataforma de Mercadeo)
+  // Resultado de la atencion (Módulo de Mercadeo)
   resultado: '',
   // Mercadeo (oportunidad comercial)
   interes: [],

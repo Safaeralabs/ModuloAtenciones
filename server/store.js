@@ -235,7 +235,7 @@ function rowToAtencion(r) {
     accionSeguimiento: r.accion_seguimiento || '',
     fechaSeguimiento: r.fecha_seguimiento || '',
     notaMercadeo: r.nota_mercadeo || '',
-    // Extension Plataforma de Mercadeo
+    // Extension Módulo de Mercadeo
     resultado: r.resultado || '',
     interesServicio: r.interes_servicio || [],
     generaCotizacion: Boolean(r.genera_cotizacion),
@@ -303,7 +303,7 @@ export async function crearAtencion(data = {}) {
       (data.sisu.empresa ? Boolean(data.sisu.empresa.autorizaCompartir) : true))
   const consentimiento = Boolean(data.consentimiento) && sisuAutoriza
 
-  // Resultado de la atencion (extension Plataforma de Mercadeo).
+  // Resultado de la atencion (extension Módulo de Mercadeo).
   let resultado = data.resultado ? String(data.resultado).trim() : ''
   if (resultado) {
     const valido = await catalogoTieneCodigo('resultado_atencion', resultado)
@@ -364,7 +364,7 @@ export async function crearAtencion(data = {}) {
       data.accionSeguimiento || '',
       data.fechaSeguimiento || '',
       data.notaMercadeo || '',
-      // Extension Plataforma de Mercadeo
+      // Extension Módulo de Mercadeo
       resultado || null,
       interesServicio,
       generaCotizacion,

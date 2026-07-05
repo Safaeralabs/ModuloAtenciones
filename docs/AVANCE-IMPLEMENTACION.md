@@ -1,4 +1,4 @@
-# Avance de Implementación — Plataforma de Mercadeo
+# Avance de Implementación — Módulo de Mercadeo
 
 Seguimiento de fases según `docs/PLAN-IMPLEMENTACION-PLATAFORMA-MERCADEO.md`.
 Rama de trabajo: `plataforma-mercadeo`.

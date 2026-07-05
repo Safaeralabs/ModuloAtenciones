@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 
 // Pool de conexiones a la BD de Mercadeo (MySQL 8+). Requisito fijo de la
-// Plataforma de Mercadeo (ver docs/PLAN-IMPLEMENTACION-PLATAFORMA-MERCADEO.md).
+// Módulo de Mercadeo (ver docs/PLAN-IMPLEMENTACION-PLATAFORMA-MERCADEO.md).
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT || 3306),

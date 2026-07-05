@@ -1,15 +1,16 @@
-# Modulo de Atencion · Turnero Comfaguajira
+# Módulo de Mercadeo · Comfaguajira
 
-Sistema de turnero para puntos de atencion: el cliente saca turno en un **kiosko (iPad)**,
-la **TV** muestra el llamado, y el **asesor** gestiona la cola y registra la atencion.
+Plataforma web del área de Mercadeo Estratégico. Integra el **turnero** de atención
+al cliente (kiosko + TV) con los procesos comerciales: cada cliente saca turno, la
+**TV** muestra el llamado y el **asesor** registra la atención, la venta o la cotización.
 
 - **Frontend:** React 18 + Vite (SPA).
 - **Backend:** Node + Express, **MySQL 8** (BD de Mercadeo), tiempo real con **SSE**.
 - **Auth:** login con JWT (sesion deslizante de 30 min) y contrasenas hasheadas (bcrypt),
   roles `asesor_integral` / `asesor_comercial` / `coordinador` / `admin`.
 
-Ademas del turnero, incluye la **Plataforma de Mercadeo**: Ventas, Cotizaciones
-(con ciclo de vida y alertas), Facturaciones, Parametrizacion, BI por rol y Auditoria.
+Ademas del turnero, incluye los modulos comerciales: **Ventas**, **Cotizaciones**
+(con ciclo de vida y alertas), **Facturaciones**, **Parametrizacion**, **BI por rol** y **Auditoria**.
 
 ## Pantallas
 

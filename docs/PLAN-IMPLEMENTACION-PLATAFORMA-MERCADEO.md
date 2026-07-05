@@ -1,4 +1,4 @@
-# Plan de Implementación — Plataforma de Gestión de Mercadeo Comfaguajira
+# Plan de Implementación — Módulo de Mercadeo Comfaguajira
 
 > **Propósito de este documento:** guía de implementación paso a paso, escrita para ser ejecutada
 > por un agente de IA (o un desarrollador) sin necesidad de consultar el documento de arquitectura
