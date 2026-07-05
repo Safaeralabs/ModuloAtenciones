@@ -1,9 +1,3 @@
-export const metrics = [
-  { label: 'Atenciones del dia', value: 18, note: 'Total realizadas hoy', tone: 'blue' },
-  { label: 'Pendientes', value: 7, note: 'Atenciones en espera', tone: 'amber' },
-  { label: 'Escaladas', value: 3, note: 'Atenciones escaladas', tone: 'red' },
-]
-
 export const attentions = [
   {
     id: 'AT-2024-001245',

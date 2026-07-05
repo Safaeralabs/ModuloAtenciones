@@ -1,0 +1,51 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mercadeo-mysql
+    environment:
+      TZ: America/Bogota
+      MYSQL_DATABASE: ${DB_NAME:-mercadeo}
+      MYSQL_USER: ${DB_USER:-mercadeo}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-cambia-esta-clave}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-cambia-esta-clave-root}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - mercadeo-mysql-data:/var/lib/mysql
+    command: --default-time-zone='-05:00' --character-set-server=utf8mb4 --collation-server=utf8mb4_spanish_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-cambia-esta-clave-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  turnero:
+    build: .
+    image: comfaguajira/turnero:latest
+    container_name: turnero
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "${PORT:-4000}:4000"
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      TZ: America/Bogota
+      JWT_SECRET: ${JWT_SECRET:-cambia-este-secreto-en-produccion}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      ADMIN_USER: ${ADMIN_USER:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${DB_USER:-mercadeo}
+      DB_PASSWORD: ${DB_PASSWORD:-cambia-esta-clave}
+      DB_NAME: ${DB_NAME:-mercadeo}
+      WS_PROVIDER: ${WS_PROVIDER:-mock}
+      WS_URL: ${WS_URL:-}
+      WS_API_KEY: ${WS_API_KEY:-}
+    restart: unless-stopped
+
+volumes:
+  mercadeo-mysql-data:

@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Módulo de Atención · Comfaguajira</title>
+<style>
+  :root {
+    --blue: #1664ea;
+    --blue-strong: #0f49b0;
+    --navy: #14213d;
+    --ink: #1f2a44;
+    --muted: #5b6b8f;
+    --line: #e2e8f5;
+    --soft: #f5f8ff;
+    --green: #1a7f4b;
+    --green-soft: #e7f7ee;
+    --amber: #ba7a00;
+    --amber-soft: #fff7e4;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--ink);
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 32px 44px;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* Portada */
+  .cover {
+    background: linear-gradient(150deg, #0f49b0 0%, #1664ea 55%, #257cff 100%);
+    color: #fff;
+    justify-content: space-between;
+    padding: 70px 60px;
+  }
+  .cover .brand {
+    display: flex; align-items: center; gap: 14px;
+    font-weight: 700; font-size: 18px; letter-spacing: .5px;
+  }
+  .cover .brand .dot {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: rgba(255,255,255,.18);
+    border: 1.5px solid rgba(255,255,255,.45);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .cover h1 { font-size: 46px; margin: 0 0 10px; line-height: 1.1; }
+  .cover .sub { font-size: 19px; opacity: .92; font-weight: 400; max-width: 620px; }
+  .cover .tagline {
+    margin-top: 26px; font-size: 15px; opacity: .9;
+    border-left: 3px solid rgba(255,255,255,.6); padding-left: 16px; max-width: 560px;
+  }
+  .cover .footer-meta { font-size: 13px; opacity: .85; }
+  .cover .pills { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
+  .cover .pill {
+    background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35);
+    border-radius: 999px; padding: 7px 16px; font-size: 13px; font-weight: 600;
+  }
+
+  h2.section {
+    font-size: 24px; color: var(--navy); margin: 0 0 4px;
+    border-bottom: 3px solid var(--blue); padding-bottom: 10px;
+  }
+  .section-eyebrow {
+    text-transform: uppercase; letter-spacing: .12em; font-size: 11px;
+    font-weight: 700; color: var(--blue); margin-bottom: 6px;
+  }
+  h3 { font-size: 15.5px; color: var(--blue-strong); margin: 17px 0 7px; }
+  p { margin: 0 0 9px; }
+  .lead { font-size: 14px; color: var(--ink); }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .card {
+    border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px;
+    background: #fff;
+  }
+  .card.soft { background: var(--soft); }
+  .card h4 { margin: 0 0 6px; font-size: 14px; color: var(--navy); }
+  .card p { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+  .flow {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0;
+  }
+  .flow .step {
+    border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+    background: #fff; position: relative;
+  }
+  .flow .step .n {
+    width: 26px; height: 26px; border-radius: 8px; background: var(--blue); color: #fff;
+    font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 13px;
+    margin-bottom: 8px;
+  }
+  .flow .step h4 { margin: 0 0 4px; font-size: 13px; color: var(--navy); }
+  .flow .step p { margin: 0; font-size: 11.5px; color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+  th, td { text-align: left; padding: 7px 11px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: var(--navy); color: #fff; font-weight: 600; }
+  tr:nth-child(even) td { background: #fafcff; }
+
+  .feature { margin: 10px 0; padding-left: 16px; border-left: 3px solid var(--blue); }
+  .feature h4 { margin: 0 0 3px; font-size: 14px; color: var(--navy); }
+  .feature ul { margin: 4px 0 0; padding-left: 18px; }
+  .feature li { margin: 2px 0; }
+
+  .callout {
+    border-radius: 12px; padding: 12px 16px; margin: 12px 0; font-size: 12.5px;
+  }
+  .callout.legal { background: var(--amber-soft); border: 1px solid #fde8a0; color: #7a5400; }
+  .callout.benefit { background: var(--green-soft); border: 1px solid #b6e6c9; color: #14603a; }
+  .callout b { color: inherit; }
+
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin: 18px 0; }
+  .kpi { border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: center; background: var(--soft); }
+  .kpi .big { font-size: 26px; font-weight: 800; color: var(--blue-strong); }
+  .kpi .lbl { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+
+  .status-list { margin: 12px 0; }
+  .status-item { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0; }
+  .badge {
+    flex: 0 0 auto; border-radius: 6px; font-size: 10.5px; font-weight: 700;
+    padding: 3px 9px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .badge.done { background: var(--green-soft); color: var(--green); border: 1px solid #b6e6c9; }
+  .badge.next { background: var(--amber-soft); color: var(--amber); border: 1px solid #fde8a0; }
+  .status-item .txt { font-size: 12.5px; }
+  .status-item .txt b { color: var(--navy); }
+
+  .footer {
+    margin-top: auto; padding-top: 12px; border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--muted); display: flex; justify-content: space-between;
+  }
+  .two-col { columns: 2; column-gap: 26px; }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="page cover">
+  <div>
+    <div class="brand"><span class="dot">◍</span> COMFAGUAJIRA</div>
+  </div>
+  <div>
+    <h1>Módulo de Atención<br>y Turnero Digital</h1>
+    <div class="sub">Plataforma para gestionar la atención al afiliado, identificar a la persona automáticamente y convertir cada visita en una oportunidad comercial trazable.</div>
+    <div class="tagline">De "atender un turno" a "conocer al afiliado, resolver su necesidad y detectar a quién y cómo ofrecerle más servicios — siempre dentro de la ley."</div>
+    <div class="pills">
+      <span class="pill">Turnero en tiempo real</span>
+      <span class="pill">Identificación por cédula (SISU)</span>
+      <span class="pill">Inteligencia de mercadeo</span>
+      <span class="pill">Cumplimiento Habeas Data</span>
+    </div>
+  </div>
+  <div class="footer-meta">
+    Documento ejecutivo · Comfaguajira · Junio 2026
+  </div>
+</div>
+
+<!-- 1. QUÉ ES / PROBLEMA -->
+<div class="page">
+  <div class="section-eyebrow">Visión general</div>
+  <h2 class="section">¿Qué es y qué problema resuelve?</h2>
+  <p class="lead">El <b>Módulo de Atención</b> es el sistema que ordena y digitaliza la atención presencial en los puntos de Comfaguajira: organiza la fila, identifica al afiliado en segundos y registra qué necesitó y qué le interesa, para que el área comercial pueda actuar después.</p>
+
+  <div class="cards">
+    <div class="card soft">
+      <h4>Antes</h4>
+      <p>Filas desordenadas, datos del afiliado capturados a mano cada vez, atenciones sin registro estructurado y oportunidades de venta que se perdían al cerrar el caso.</p>
+    </div>
+    <div class="card soft">
+      <h4>Ahora</h4>
+      <p>Turno digital con prioridades, datos del afiliado traídos automáticamente de SISU, historial completo de cada atención y una señal comercial lista para mercadeo.</p>
+    </div>
+  </div>
+
+  <h3>Tres roles, una experiencia coordinada</h3>
+  <div class="flow">
+    <div class="step"><div class="n">1</div><h4>Afiliado</h4><p>Saca su turno en una tablet (kiosko) eligiendo el servicio e indicando si es prioritario.</p></div>
+    <div class="step"><div class="n">2</div><h4>Pantalla TV</h4><p>Muestra a quién se llama y a qué módulo, con aviso sonoro, en tiempo real.</p></div>
+    <div class="step"><div class="n">3</div><h4>Asesor</h4><p>Llama al siguiente, identifica al afiliado por cédula y registra la atención.</p></div>
+    <div class="step"><div class="n">4</div><h4>Comercial</h4><p>Recibe atenciones con interés detectado y consentimiento para hacer seguimiento.</p></div>
+  </div>
+
+  <div class="callout benefit">
+    <b>Valor para el negocio:</b> menos tiempo de espera, datos confiables del afiliado sin recapturar, trazabilidad total de la atención y un canal nuevo de oportunidades comerciales generado en la misma operación del día a día.
+  </div>
+
+  <div class="footer"><span>Módulo de Atención · Comfaguajira</span><span>1</span></div>
+</div>
+
+<!-- 2. IDENTIFICACIÓN SISU -->
+<div class="page">
+  <div class="section-eyebrow">Funcionalidad clave</div>
+  <h2 class="section">Identificación del afiliado con SISU</h2>
+  <p class="lead">Cuando el afiliado se acerca, solo entrega su <b>cédula</b>. El asesor la digita y el sistema consulta automáticamente a <b>SISU</b> (la base de subsidios), trayendo quién es la persona y su empresa afiliadora. Si no existe, se registra manualmente.</p>
+
+  <div class="cards">
+    <div class="card">
+      <h4>Si el afiliado existe en SISU</h4>
+      <p>El formulario se autocompleta y se muestra una ficha de solo lectura con los datos del afiliado y de su empresa. El asesor no recaptura nada: solo verifica.</p>
+    </div>
+    <div class="card">
+      <h4>Si no existe</h4>
+      <p>El sistema lo indica con claridad y el asesor lo registra manualmente. La atención queda igualmente guardada en el historial.</p>
+    </div>
+  </div>
+
+  <h3>Qué información trae SISU automáticamente</h3>
+  <table>
+    <tr><th style="width:30%">Del afiliado (trabajador)</th><th>De la empresa (afiliador)</th></tr>
+    <tr>
+      <td>Cédula, nombre, estado (Activo/Retirado), fecha de afiliación o retiro, salario, nivel educativo, profesión, categoría (A/B/C), tipo de cotizante, sexo, estado civil, fecha de nacimiento (edad), dirección, ciudad, teléfono/celular, beneficiarios y <b>autorización de datos</b>.</td>
+      <td>NIT, razón social, sucursal, zona, estado, número de trabajadores, actividad económica y <b>autorización de compartir información</b>.</td>
+    </tr>
+  </table>
+
+  <div class="callout benefit">
+    <b>Por qué importa:</b> estos datos dicen <b>quién es</b> el afiliado (demografía, ingresos, empresa, estado). Es exactamente la información que permite segmentar: a quién se le puede ofrecer crédito, vivienda, educación, recreación, etc., y cómo.
+  </div>
+
+  <h3>Listo para conectar con los sistemas internos</h3>
+  <p>Hoy el sistema funciona con datos de demostración. La conexión a SISU está diseñada como un "enchufe" independiente: cuando el área de TI entregue el acceso al servicio real, se conecta en un único punto sin reconstruir el sistema. Soporta los formatos de integración estándar (REST/JSON o SOAP).</p>
+
+  <div class="footer"><span>Módulo de Atención · Comfaguajira</span><span>2</span></div>
+</div>
+
+<!-- 3. MERCADEO -->
+<div class="page">
+  <div class="section-eyebrow">Funcionalidad clave</div>
+  <h2 class="section">Inteligencia de mercadeo en cada atención</h2>
+  <p class="lead">La novedad estratégica: cada atención, además de resolver una solicitud, se convierte en una <b>oportunidad comercial trazable</b>. El asesor registra qué le interesa al afiliado y si autoriza que lo contacten.</p>
+
+  <h3>Las tres capas de información de una atención</h3>
+  <table>
+    <tr><th style="width:24%">Origen</th><th>Qué aporta</th><th>Para qué sirve al negocio</th></tr>
+    <tr><td><b>SISU (automático)</b></td><td>Quién es: demografía, salario, empresa, estado, autorización legal.</td><td>Dice a quién se puede segmentar y cómo.</td></tr>
+    <tr><td><b>Atención (operativa)</b></td><td>Qué necesitó: servicio y motivo de la visita.</td><td>Da el contexto de la interacción.</td></tr>
+    <tr><td><b>Atención (comercial)</b></td><td>Qué le interesa / producto detectado.</td><td>Es la señal comercial real, no solo la operativa.</td></tr>
+    <tr><td><b>Atención (comercial)</b></td><td>Consentimiento + acción de seguimiento.</td><td>Convierte el caso cerrado en una oportunidad de mercadeo accionable.</td></tr>
+  </table>
+
+  <h3>Qué captura el asesor</h3>
+  <div class="cards">
+    <div class="card">
+      <h4>Productos de interés</h4>
+      <p>Crédito, vivienda, educación, recreación y turismo, salud, supermercados, seguros, convenios. Se marcan los que apliquen.</p>
+    </div>
+    <div class="card">
+      <h4>Seguimiento</h4>
+      <p>Consentimiento del afiliado, acción a realizar (llamar, enviar información, agendar cita, visita) y fecha de seguimiento.</p>
+    </div>
+  </div>
+
+  <div class="callout legal">
+    <b>Cumplimiento legal (Habeas Data · Ley 1581):</b> el sistema respeta la autorización de datos que viene de SISU. Si el afiliado o su empresa <b>no autorizan</b> compartir información a terceros, el sistema <b>bloquea automáticamente</b> el registro de seguimiento comercial. Esta regla se aplica de forma doble (en la pantalla y en el servidor), de modo que no es posible saltarla. Así, todo el mercadeo nace ya filtrado legalmente.
+  </div>
+
+  <div class="callout benefit">
+    <b>Resultado:</b> el área comercial obtiene una lista de afiliados con interés real, contactables legalmente, generada sin costo adicional durante la atención normal.
+  </div>
+
+  <div class="footer"><span>Módulo de Atención · Comfaguajira</span><span>3</span></div>
+</div>
+
+<!-- 4. FUNCIONALIDADES COMPLETAS -->
+<div class="page">
+  <div class="section-eyebrow">Alcance</div>
+  <h2 class="section">Funcionalidades del sistema</h2>
+
+  <div class="feature">
+    <h4>Turnero y gestión de cola</h4>
+    <ul>
+      <li>Kiosko en tablet: el afiliado saca turno por servicio, con opción prioritaria (adulto mayor, gestante, movilidad reducida, discapacidad).</li>
+      <li>Turnos numerados por tipo de servicio, con reinicio automático cada día.</li>
+      <li>Atención por prioridad y orden de llegada; opciones de rellamar y marcar ausente.</li>
+      <li>Pantalla de TV con el llamado en tiempo real y aviso sonoro.</li>
+    </ul>
+  </div>
+
+  <div class="feature">
+    <h4>Identificación y registro del afiliado</h4>
+    <ul>
+      <li>Búsqueda por cédula contra SISU, con autocompletado de datos.</li>
+      <li>Registro manual cuando el afiliado no está en SISU.</li>
+      <li>Ficha de datos del afiliado y su empresa (solo lectura) con su autorización de datos visible.</li>
+    </ul>
+  </div>
+
+  <div class="feature">
+    <h4>Registro de atenciones</h4>
+    <ul>
+      <li>Datos de la atención: servicio, motivo, estado, gestión realizada y observaciones.</li>
+      <li>Cálculo automático del tiempo de espera y de atención de cada turno.</li>
+      <li>Historial completo y consultable, con detalle por atención.</li>
+    </ul>
+  </div>
+
+  <div class="feature">
+    <h4>Oportunidad de mercadeo</h4>
+    <ul>
+      <li>Captura de productos de interés y consentimiento de seguimiento.</li>
+      <li>Acción y fecha de seguimiento comercial.</li>
+      <li>Filtro legal automático según autorización del afiliado.</li>
+    </ul>
+  </div>
+
+  <div class="feature">
+    <h4>Administración y seguridad</h4>
+    <ul>
+      <li>Inicio de sesión con usuario y contraseña; perfiles de Asesor y Administrador.</li>
+      <li>Gestión de usuarios (crear, editar, activar/desactivar, cambiar rol y contraseña).</li>
+      <li>Datos protegidos, copias de seguridad automáticas y aviso de tratamiento de datos al afiliado.</li>
+    </ul>
+  </div>
+
+  <div class="footer"><span>Módulo de Atención · Comfaguajira</span><span>4</span></div>
+</div>
+
+<!-- 5. ESTADO Y HOJA DE RUTA -->
+<div class="page">
+  <div class="section-eyebrow">Situación actual</div>
+  <h2 class="section">Estado del proyecto y próximos pasos</h2>
+
+  <div class="kpis">
+    <div class="kpi"><div class="big">10</div><div class="lbl">Pantallas operativas</div></div>
+    <div class="kpi"><div class="big">100%</div><div class="lbl">Núcleo funcional construido</div></div>
+    <div class="kpi"><div class="big">Listo</div><div class="lbl">Para conectar SISU real</div></div>
+  </div>
+
+  <h3>Construido y funcionando</h3>
+  <div class="status-list">
+    <div class="status-item"><span class="badge done">Hecho</span><div class="txt"><b>Turnero completo</b> — kiosko, pantalla TV, gestión de cola con prioridades y tiempo real.</div></div>
+    <div class="status-item"><span class="badge done">Hecho</span><div class="txt"><b>Identificación por cédula (SISU)</b> — autocompletado, ficha de afiliado y empresa, registro manual.</div></div>
+    <div class="status-item"><span class="badge done">Hecho</span><div class="txt"><b>Captura de mercadeo</b> — intereses, consentimiento y seguimiento, con filtro legal automático.</div></div>
+    <div class="status-item"><span class="badge done">Hecho</span><div class="txt"><b>Historial y detalle de atenciones</b>, incluyendo los datos de SISU y de mercadeo guardados.</div></div>
+    <div class="status-item"><span class="badge done">Hecho</span><div class="txt"><b>Usuarios, seguridad y despliegue</b> — perfiles, copias de seguridad y aviso de Habeas Data.</div></div>
+  </div>
+
+  <h3>Próximos pasos</h3>
+  <div class="status-list">
+    <div class="status-item"><span class="badge next">Siguiente</span><div class="txt"><b>Conectar SISU real</b> — depende de que TI entregue el acceso al servicio. La integración ya está preparada.</div></div>
+    <div class="status-item"><span class="badge next">Siguiente</span><div class="txt"><b>Tablero de segmentación de mercadeo</b> — la información ya se captura; falta la vista de reportes para explotarla.</div></div>
+    <div class="status-item"><span class="badge next">Futuro</span><div class="txt"><b>Múltiples sedes</b>, impresión física de tickets y anuncio por voz en la TV.</div></div>
+    <div class="status-item"><span class="badge next">Futuro</span><div class="txt"><b>Política de privacidad oficial</b> y definición del tiempo de retención de los datos.</div></div>
+  </div>
+
+  <div class="callout benefit">
+    <b>En síntesis:</b> el sistema ya opera de extremo a extremo con datos de demostración. El paso que desbloquea todo el valor comercial es la conexión con SISU; a partir de ahí, cada atención del día alimenta una base de oportunidades de mercadeo legalmente filtrada.
+  </div>
+
+  <div class="footer"><span>Módulo de Atención · Comfaguajira · Junio 2026</span><span>5</span></div>
+</div>
+
+</body>
+</html>
