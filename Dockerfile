@@ -29,4 +29,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/server ./server
 
 EXPOSE 4000
-CMD ["node", "server/index.js"]
+# Aplica migraciones pendientes (idempotente) y luego arranca la API. Asi el
+# despliegue en Railway / compose no requiere un paso manual de migracion.
+CMD ["sh", "-c", "node server/migrate.js && node server/index.js"]

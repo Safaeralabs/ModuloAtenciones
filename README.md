@@ -4,8 +4,12 @@ Sistema de turnero para puntos de atencion: el cliente saca turno en un **kiosko
 la **TV** muestra el llamado, y el **asesor** gestiona la cola y registra la atencion.
 
 - **Frontend:** React 18 + Vite (SPA).
-- **Backend:** Node + Express, **SQLite** (better-sqlite3), tiempo real con **SSE**.
-- **Auth:** login con JWT y contrasenas hasheadas (bcrypt), roles `asesor` / `admin`.
+- **Backend:** Node + Express, **MySQL 8** (BD de Mercadeo), tiempo real con **SSE**.
+- **Auth:** login con JWT (sesion deslizante de 30 min) y contrasenas hasheadas (bcrypt),
+  roles `asesor_integral` / `asesor_comercial` / `coordinador` / `admin`.
+
+Ademas del turnero, incluye la **Plataforma de Mercadeo**: Ventas, Cotizaciones
+(con ciclo de vida y alertas), Facturaciones, Parametrizacion, BI por rol y Auditoria.
 
 ## Pantallas
 
@@ -40,43 +44,79 @@ Abrir http://localhost:5173. El proxy de Vite redirige `/api` al backend.
 
 ---
 
-## Despliegue en produccion (Docker)
+## Despliegue en Railway (recomendado para demo / staging)
 
-Un solo contenedor sirve el frontend y la API.
+Railway construye con el `Dockerfile` del repo (un solo contenedor sirve el
+frontend y la API) y **aplica las migraciones solo al arrancar**.
+
+1. **New Project → Deploy from GitHub repo** → elige el repo y la rama.
+2. **Add → Database → MySQL** — Railway lo provisiona y expone sus variables.
+3. En el **servicio de la app**, pestana *Variables*, define (referenciando la BD):
+
+   ```
+   DB_HOST=${{MySQL.MYSQLHOST}}
+   DB_PORT=${{MySQL.MYSQLPORT}}
+   DB_USER=${{MySQL.MYSQLUSER}}
+   DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}
+   DB_NAME=${{MySQL.MYSQLDATABASE}}
+   JWT_SECRET=<una-cadena-larga-y-aleatoria>
+   ADMIN_USER=admin
+   ADMIN_PASSWORD=<clave-segura>
+   NODE_ENV=production
+   WS_PROVIDER=mock
+   BACKUP_ENABLED=false      # en Railway usa los backups gestionados de la BD
+   ```
+4. **Settings → Networking → Generate Domain** para obtener la URL publica.
+   Railway inyecta `PORT` automaticamente; la app ya lo respeta.
+
+> La BD queda en la red privada de Railway. Es ideal para **mostrar la plataforma**
+> con datos mock de SISU; para produccion real de Comfaguajira, ver on-premise abajo.
+
+## Despliegue con Docker Compose (servidor propio)
+
+Levanta MySQL + la app juntos. Un solo contenedor sirve el frontend y la API.
 
 ```bash
 # 1. Configura las variables
 cp .env.example .env
-#   -> edita JWT_SECRET y ADMIN_PASSWORD (obligatorio)
+#   -> edita JWT_SECRET, ADMIN_PASSWORD y DB_PASSWORD (obligatorio)
 
-# 2. Construye y levanta
+# 2. Construye y levanta (las migraciones se aplican solas al arrancar)
 docker compose up -d --build
 ```
 
-La app queda en `http://<host>:4000`. La base de datos SQLite persiste en el
-volumen `turnero-data` (sobrevive a reinicios y actualizaciones del contenedor).
+La app queda en `http://<host>:4000`. Los datos persisten en el volumen
+`mercadeo-mysql-data`. Delante conviene un nginx con el dominio interno + HTTPS.
 
-### Variables de entorno
+### Variables de entorno principales
 
 | Variable | Por defecto | Descripcion |
 |----------|-------------|-------------|
-| `PORT` | `4000` | Puerto del servidor |
+| `PORT` | `4000` | Puerto del servidor (Railway lo inyecta) |
 | `JWT_SECRET` | — | Secreto para firmar sesiones (**cambiar**) |
+| `JWT_TTL` | `30m` | Expiracion por inactividad (ventana deslizante) |
 | `CORS_ORIGIN` | `*` | Origen permitido para CORS |
 | `ADMIN_USER` / `ADMIN_PASSWORD` | `admin` / `admin123` | Admin sembrado en el primer arranque |
-| `DB_PATH` | `server/data/turnero.db` | Ruta del archivo SQLite |
+| `DB_HOST` / `DB_PORT` / `DB_USER` / `DB_PASSWORD` / `DB_NAME` | — | Conexion a MySQL |
+| `WS_PROVIDER` | `mock` | SISU: `mock` / `rest` / `soap` / `off` |
+| `SMTP_HOST` … `SMTP_FROM` | vacio | Correo de alertas (vacio = solo notificacion interna) |
+| `BACKUP_ENABLED` | `true` | Respaldo diario con `mysqldump` (2am) en bare-metal |
 
-### Sin Docker (servidor on-premise)
+Ver `.env.example` para la lista completa.
+
+### Sin Docker (servidor on-premise / bare-metal)
 
 ```bash
 npm ci && npm run build          # genera dist/
-cd server && npm ci --omit=dev && cd ..
-# define las variables (o usa un archivo .env) y arranca:
+cd server && npm ci --omit=dev
+npm run migrate                  # crea/actualiza las tablas (idempotente)
+cd ..
+# define las variables (o usa server/.env) y arranca:
 NODE_ENV=production node server/index.js
 ```
 
 Con `NODE_ENV=production` el backend sirve `dist/` y la API desde el puerto 4000.
-Para que arranque solo, usar PM2 (`pm2 start server/index.js --name turnero`) o un
+Para que arranque solo, usar PM2 (`pm2 start server/index.js --name mercadeo`) o un
 servicio del sistema.
 
 ---
@@ -100,19 +140,31 @@ Inicia sesion con un usuario **admin** → menu **Usuarios**. Desde ahi puedes:
 > En el primer arranque se siembra el admin definido en `.env` (`ADMIN_USER`/`ADMIN_PASSWORD`).
 > Crea los usuarios reales y cambia las contrasenas de demo.
 
-## Backups de la base de datos
+## Backups de la base de datos (MySQL)
 
-La BD vive en el volumen Docker `turnero-data`. Hay scripts listos:
+El respaldo se hace con `mysqldump` (comprimido a `.sql.gz`). Segun el despliegue:
 
-```bash
-# Linux/macOS (programar con cron, p. ej. diario a las 10pm)
-./scripts/backup.sh /ruta/a/backups
+- **Railway:** usa los **backups gestionados** del servicio MySQL (deja `BACKUP_ENABLED=false`).
+- **Bare-metal (on-premise):** el backend ya trae un cron diario a las 2am
+  (`server/backup.js`). Configuralo por env y apunta `BACKUP_DIR` a un disco o
+  recurso de red **distinto** al servidor principal (lo exige la arquitectura):
 
-# Windows (programar con el Programador de tareas)
-powershell -File .\scripts\backup.ps1 C:\backups
-```
+  ```bash
+  # manual / verificacion
+  cd server && npm run backup
+  ```
 
-Ambos conservan los ultimos 30 respaldos automaticamente.
+  Variables: `BACKUP_DIR`, `BACKUP_RETENTION_DAYS` (por defecto 14),
+  `MYSQLDUMP_PATH` (si `mysqldump` no esta en el PATH), `BACKUP_ENABLED`.
+
+- **Docker Compose:** el cron interno queda desactivado (el contenedor es
+  efimero). Programa en el host un dump desde el servicio `mysql`:
+
+  ```bash
+  docker compose exec -T mysql \
+    mysqldump -u root -p"$DB_ROOT_PASSWORD" --single-transaction mercadeo \
+    | gzip > /ruta/backups/mercadeo-$(date +%F).sql.gz
+  ```
 
 ## Autostart de la TV / kiosko (mini-PC o Raspberry Pi)
 

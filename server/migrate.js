@@ -30,9 +30,16 @@ async function ensureDatabase() {
     password: DB_PASSWORD,
     multipleStatements: true,
   })
-  await conn.query(
-    `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci`,
-  )
+  // En entornos gestionados (Railway, docker-compose) la BD ya viene creada y el
+  // usuario suele no tener privilegio global de CREATE DATABASE. Si falla por eso
+  // pero la BD existe, seguimos: la conexion a DB_NAME de migrate() lo confirmara.
+  try {
+    await conn.query(
+      `CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_spanish_ci`,
+    )
+  } catch (err) {
+    console.warn(`No se pudo asegurar la BD "${DB_NAME}" (${err.code || err.message}); se asume que ya existe.`)
+  }
   await conn.end()
 }
 
@@ -76,7 +83,9 @@ async function migrate() {
   console.log('Migraciones al dia.')
 }
 
-migrate().catch((err) => {
-  console.error('Error ejecutando migraciones:', err)
-  process.exit(1)
-})
+migrate()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error('Error ejecutando migraciones:', err)
+    process.exit(1)
+  })

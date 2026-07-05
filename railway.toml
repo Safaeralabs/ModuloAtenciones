@@ -1,0 +1,20 @@
+# Configuracion de despliegue en Railway (https://railway.app).
+# Railway construye con el Dockerfile del repo (multi-etapa: build del frontend +
+# API en un solo contenedor). Las migraciones se aplican solas al arrancar (ver
+# el CMD del Dockerfile), asi que no hace falta un paso manual.
+#
+# Pasos rapidos:
+#   1. New Project -> Deploy from GitHub repo -> selecciona esta rama.
+#   2. Add -> Database -> MySQL (Railway lo provisiona y expone sus variables).
+#   3. En el servicio de la app, define las variables (ver README, seccion Railway):
+#      DB_HOST=${{MySQL.MYSQLHOST}}  DB_PORT=${{MySQL.MYSQLPORT}}
+#      DB_USER=${{MySQL.MYSQLUSER}}  DB_PASSWORD=${{MySQL.MYSQLPASSWORD}}
+#      DB_NAME=${{MySQL.MYSQLDATABASE}}  JWT_SECRET=<algo-largo>  BACKUP_ENABLED=false
+#   4. Networking -> Generate Domain para obtener la URL publica.
+
+[build]
+builder = "dockerfile"
+
+[deploy]
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10

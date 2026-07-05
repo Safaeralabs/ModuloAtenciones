@@ -45,6 +45,18 @@ services:
       WS_PROVIDER: ${WS_PROVIDER:-mock}
       WS_URL: ${WS_URL:-}
       WS_API_KEY: ${WS_API_KEY:-}
+      # Sesion deslizante de 30 min por inactividad (RNF Seguridad).
+      JWT_TTL: ${JWT_TTL:-30m}
+      # Correo SMTP para alertas de cotizacion por vencer (vacio = solo notificacion interna).
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-Mercadeo Comfaguajira <no-reply@comfaguajira.co>}
+      # El respaldo dentro del contenedor no persiste; en on-premise se hace desde
+      # el servicio mysql (ver README). Por eso el cron interno queda desactivado.
+      BACKUP_ENABLED: ${BACKUP_ENABLED:-false}
     restart: unless-stopped
 
 volumes:
